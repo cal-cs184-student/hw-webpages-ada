@@ -28,7 +28,7 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 1 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<div style="text-align: center;">Names: Zehan Ma</div>
 
 		<br>
 
@@ -46,12 +46,15 @@
 
 		<h2>Overview</h2>
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		<!-- TODO -->
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
 		- Walk through how you rasterize triangles in your own words.
+		
 		I basically implemented the algorithm from lecture where I loop through all pixels in bounding box of the triangle and perform three-line test on each sample point. Only if the sample points is wthin 3 lines, its within the triangle and I just call fill_pixel() to color the pixel. 
 
 		- Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle. The bounding box of the triangle is defined as the smallest rectangle that can be drawn whilst ensuring that the entire triangle is within it.
+		
 		Since my implementation directly implemented the one mentioend in the question (which is sample each pixel within bounding box of the triangle), my algorithm is no worse than that.
 		
 		- Below is the screenshot of the test4.svg file.
@@ -88,6 +91,7 @@
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
 		- Walk through your supersampling algorithm and data structures. Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles.
+		
 		Firstly, I will resize my sample_buffer based on given sample rate. I modifyed my solution from task 1 such that when rasterizing the triangle, it will split the current frame to a higher resolution frame (based on sample rate), then I will sample points in the higher resolution frame. Then in resolve_to_framebuffer function, I will avarage the color in the higher res frame and downsampling back into the original frame. Supersampling is useful since it can help reducing the aliasing effect and make the image looks smoother. 
 		
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -108,12 +112,27 @@
 				</tr>
 			</table>
 		</div>
+
+		We can reserve that with higher sampling rate, the edge of the triangle looks much smoother than sampling rate=1. Also, we can visualize the difference of color in the edge, where the color is dimmer in the edge. This is because supersampling helps with antialiasing and I'm applying averaging the color. 
 		
 		<h2>Task 3: Transforms</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		The cube man is happily waving his hands and dancing!
+		<figure>
+			<img src="task3_dancing_man.png" alt="task 1/test 4" style="width:50%"/>
+		</figure>
 
 		<h2>Task 4: Barycentric coordinates</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Barycentric coordinates will express every points inside the triangle as a weighted sum of the 3 vertices. So in this triangle for example, I defined 3 vertices as red, green red, and you can observe that the closer a point to the vertex, the color of the point is closer to the color of the vertex. Also, because of using barycentric coordinates, the color within the triangle is blended smoothly.
+
+		<figure>
+			<img src="task4_barycentric_triangle.png" alt="task 4 illustration" style="width:50%"/>
+		</figure>
+
+		Below is the screenshot of svg/basic/test7.svg with default viewing parameters and sample rate 1.
+
+		<figure>
+			<img src="task4_barycentric_circle.png" alt="task 4 circle" style="width:50%"/>
+			<figcaption>basic/test7.svg screenshot</figcaption>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
@@ -122,18 +141,9 @@
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		N/A
+		
 
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
 		</div>
 	</body>
 </html>
