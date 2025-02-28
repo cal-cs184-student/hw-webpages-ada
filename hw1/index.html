@@ -49,11 +49,8 @@
 		<!-- TODO -->
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		- Walk through how you rasterize triangles in your own words.
 		
 		I basically implemented the algorithm from lecture where I loop through all pixels in bounding box of the triangle and perform three-line test on each sample point. Only if the sample points is wthin 3 lines, its within the triangle and I just call fill_pixel() to color the pixel. 
-
-		- Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle. The bounding box of the triangle is defined as the smallest rectangle that can be drawn whilst ensuring that the entire triangle is within it.
 		
 		Since my implementation directly implemented the one mentioend in the question (which is sample each pixel within bounding box of the triangle), my algorithm is no worse than that.
 		
@@ -63,34 +60,9 @@
 			<figcaption>basic/test4.svg screenshot</figcaption>
 		</figure>
 
-		<!-- <p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div> -->
+
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
-		- Walk through your supersampling algorithm and data structures. Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles.
 		
 		Firstly, I will resize my sample_buffer based on given sample rate. I modifyed my solution from task 1 such that when rasterizing the triangle, it will split the current frame to a higher resolution frame (based on sample rate), then I will sample points in the higher resolution frame. Then in resolve_to_framebuffer function, I will avarage the color in the higher res frame and downsampling back into the original frame. Supersampling is useful since it can help reducing the aliasing effect and make the image looks smoother. 
 		
@@ -135,11 +107,68 @@
 			<figcaption>basic/test7.svg screenshot</figcaption>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
+		Pixel sampling is the process of determining the color of a pixel in the framebuffer by sampling the texture. To perform texture mapping, I will map the sample point from framebuffer to texture space by using berycentric coordinates. If the sampling strategy is nearest: I will just sample the nearest pixel in the texture space. If the sampling strategy is bilinear: I will sample the 4 nearest pixels in the texture space and perform bilinear interpolation to get the final color by using the equation discussed in lecture. 
+		Here's the result showing that bilinear sampling is much better at smoothing the texture than nearest sampling. And both supersampling & bilinear interpolation can help with antialiasing.
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task5_nearest_1.png" width="400px"/>
+				  <figcaption>nearest sampling at 1 sample per pixel</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task5_nearest_16.png" width="400px"/>
+				  <figcaption>nearest sampling at 16 samples per pixel</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task5_bilinear_1.png" width="400px"/>
+				  <figcaption>bilinear sampling at 1 sample per pixel</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task5_bilinear_16.png" width="400px"/>
+				  <figcaption>bilinear sampling at 16 samples per pixel</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+		
+		
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Level sampling in texture mapping determines which mipmap level should be used when fetching texture data. Since textures are often downsampled into multiple levels (mipmaps) to improve rendering efficiency and reduce aliasing, selecting the correct level is crucial.
+		
+		In terms of their performance, level 0 is the fastest but it uses the full resolution so that it will use a lot of memory, and it will have aliasing problems. Nearest will improve the aliasing problem by choosing the nearest mipmap level. Finally Linear has the best performance as it will interpolate between two mipmap levels to get the final color such that it has better antialiasing effect. 
 
+		<figure>
+			<img src="IMG_4006.png" alt="task 1/test 4" style="width:50%"/>
+			<figcaption>texture image: my sister's cat!</figcaption>
+		</figure>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="L_ZERO_P_NEAREST.png" width="400px"/>
+				  <figcaption>L_ZERO & P_NEAREST</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="L_ZERO_P_LINEAR.png" width="400px"/>
+				  <figcaption>L_ZERO & P_LINEAR</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="L_NEAREST_P_NEAREST.png" width="400px"/>
+				  <figcaption>L_NEAREST & P_NEAREST</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="L_NEAREST_P_LINEAR.png" width="400px"/>
+				  <figcaption>L_NEAREST & P_LINEAR</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
 		N/A
 		
