@@ -49,9 +49,9 @@
 
 		<h2>Overview</h2>
 		<p>	In homework 2, I mainly focused on 2 things: working with Bezier curves and surface, and work with Half-Edge data structure to manipulate triangle meshes. In the first part, I implemented de Casteljau's algorithm to evaluate Bezier curves. I can drag each control points to see how the Bezier curve changes. I also implemented Bezier surface evaluation and applied it to a teapot model.</p>
-		<br>
+
 		<p>In the second part, I implemented area-weighted vertex normals to do the Phong Shading. I implemented several low-level operations for triangle meshes such as edge flip and edge split. Finally, I implemented loop subdivision for mesh subsampling and experimented with it on a cube and a teapot mesh.</p>
-		<br>
+
 		<p>The most interesting part of this homework was working with the Half-Edge data structure. It reminded me of my experience in CS 61B, where I worked extensively with linked lists and trees, both of which require careful pointer manipulation.</p>
 
 		<h2>Section I: Bezier Curves and Surfaces</h2>
@@ -123,7 +123,7 @@
 		<p>	
 		Area-weighted vertex normals can be used for Phong shading, which provides better shading for smooth surfaces.</p>
 		
-		<p>	In my implementation, I used half edge data structure to iterate throgh triangles connected to the given vertex: <br>
+		<p>	In my implementation, I used half edge data structure to iterate throgh triangles connected to the given vertex: 
 		For each halfEdge, I will first determine its corresponding face by identifying the three vertices that form the triangle & get their vertex positions. Next, I will compute the triangle's normal using the cross product. I will then weight this normal by the triangle's area. Finally, I will sum all area-weighted normals associated with the vertex and return the unit vector of the resulting sum.</p>
 		
 		<p>	Below is the comparison between the mesh without vertex normal and with vertex normal. We can see that Phong shading with vertex normal is a lot smoother than the other. </p>
