@@ -48,19 +48,19 @@
 		-->
 
 		<h2>Overview</h2>
-		In homework 2, I mainly focused on 2 things: working with Bezier curves and surface, and work with Half-Edge data structure to manipulate triangle meshes. In the first part, I implemented de Casteljau's algorithm to evaluate Bezier curves. I can drag each control points to see how the Bezier curve changes. I also implemented Bezier surface evaluation and applied it to a teapot model.
+		<p>	In homework 2, I mainly focused on 2 things: working with Bezier curves and surface, and work with Half-Edge data structure to manipulate triangle meshes. In the first part, I implemented de Casteljau's algorithm to evaluate Bezier curves. I can drag each control points to see how the Bezier curve changes. I also implemented Bezier surface evaluation and applied it to a teapot model.</p>
 		<br>
-		In the second part, I implemented area-weighted vertex normals to do the Phong Shading. I implemented several low-level operations for triangle meshes such as edge flip and edge split. Finally, I implemented loop subdivision for mesh subsampling and experimented with it on a cube and a teapot mesh.
+		<p>In the second part, I implemented area-weighted vertex normals to do the Phong Shading. I implemented several low-level operations for triangle meshes such as edge flip and edge split. Finally, I implemented loop subdivision for mesh subsampling and experimented with it on a cube and a teapot mesh.</p>
 		<br>
-		The most interesting part of this homework was working with the Half-Edge data structure. It reminded me of my experience in CS 61B, where I worked extensively with linked lists and trees, both of which require careful pointer manipulation.
+		<p>The most interesting part of this homework was working with the Half-Edge data structure. It reminded me of my experience in CS 61B, where I worked extensively with linked lists and trees, both of which require careful pointer manipulation.</p>
 
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
 		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
-		De Casteljau's algorithm is a recursive algorithm to evaluate a Bezier curve. By given a list of control points and parameter t, it will subdivide every connected line by t and (1-t) to get intermediate points. This process is repeated until only one point remains (which will land on the Bezier curve). As parameter t ranges from 0 to 1, the point will move along the Bezier curve, resulting in a complete curve. <br>
-		In part 1, I implemented de Casteljau's algorithm to evaluate a Bezier curve. Specifically, given a vector of points in 2D, I will find the intermediate points by lerp function which is (1-t) * pi + t * p(i+1) for any 2 points. I will repeat this until all pairs of points are evaluated. <br>
+		<p>	De Casteljau's algorithm is a recursive algorithm to evaluate a Bezier curve. By given a list of control points and parameter t, it will subdivide every connected line by t and (1-t) to get intermediate points. This process is repeated until only one point remains (which will land on the Bezier curve). As parameter t ranges from 0 to 1, the point will move along the Bezier curve, resulting in a complete curve. </p>
+		<p>In part 1, I implemented de Casteljau's algorithm to evaluate a Bezier curve. Specifically, given a vector of points in 2D, I will find the intermediate points by lerp function which is (1-t) * pi + t * p(i+1) for any 2 points. I will repeat this until all pairs of points are evaluated. </p>
 		
-		Here, I defined a custom Bezier Curve with 6 control points, and I used this curve to test my de Casteljau's algorithm.I will show each level of evaluation from the original control points down to the final evaluated point. Below is the screenshots of each level of evaluation from the original control points down to the final evaluated point.<br>
+		<p>Here, I defined a custom Bezier Curve with 6 control points, and I used this curve to test my de Casteljau's algorithm.I will show each level of evaluation from the original control points down to the final evaluated point. Below is the screenshots of each level of evaluation from the original control points down to the final evaluated point.</p>
 
 		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -107,11 +107,11 @@
 
 
 		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
-		In this part, I extend the de Casteljau's algorithm to evaluate a Bezier surface. The algorithm is similar to the Bezier curve, but now we have 2 parameters u and v. In a Bezier furface, we will have nxn grid of control points, and it's simply a combination of Bezier curved in u direction (getting bezier curves at each row) and in v direction (get a final bezier curve along all row curves.)<br>
+		<p>In this part, I extend the de Casteljau's algorithm to evaluate a Bezier surface. The algorithm is similar to the Bezier curve, but now we have 2 parameters u and v. In a Bezier furface, we will have nxn grid of control points, and it's simply a combination of Bezier curved in u direction (getting bezier curves at each row) and in v direction (get a final bezier curve along all row curves.)<p>
 
-		In my implementation, I will first take each row's control points and evaluate the curve with parameter u. I did it for each row so I get a set of n control points. Then I will evaluate the final point by calling de Casteljau's 1D algorithm on the n control points in v direction. Thus, we can extend to Bezier Surface. 
+		<p>In my implementation, I will first take each row's control points and evaluate the curve with parameter u. I did it for each row so I get a set of n control points. Then I will evaluate the final point by calling de Casteljau's 1D algorithm on the n control points in v direction. Thus, we can extend to Bezier Surface. </p>
 		
-		Below is the image for teapot using Bezier Surface evaluation. 
+		<p>Below is the image for teapot using Bezier Surface evaluation. </p>
 		<figure>
 			<img src="teapot_part2.png" alt="task 1/test 4" style="width:50%"/>
 		</figure>
@@ -120,12 +120,13 @@
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
 		<h3>Part 3: Area-weighted vertex normals</h3>
-		Area-weighted vertex normals can be used for Phong shading, which provides better shading for smooth surfaces.<br>
+		<p>	
+		Area-weighted vertex normals can be used for Phong shading, which provides better shading for smooth surfaces.</p>
 		
-		In my implementation, I used half edge data structure to iterate throgh triangles connected to the given vertex: <br>
-		For each halfEdge, I will first determine its corresponding face by identifying the three vertices that form the triangle & get their vertex positions. Next, I will compute the triangle's normal using the cross product. I will then weight this normal by the triangle's area. Finally, I will sum all area-weighted normals associated with the vertex and return the unit vector of the resulting sum.<br>
+		<p>	In my implementation, I used half edge data structure to iterate throgh triangles connected to the given vertex: <br>
+		For each halfEdge, I will first determine its corresponding face by identifying the three vertices that form the triangle & get their vertex positions. Next, I will compute the triangle's normal using the cross product. I will then weight this normal by the triangle's area. Finally, I will sum all area-weighted normals associated with the vertex and return the unit vector of the resulting sum.</p>
 		
-		Below is the comparison between the mesh without vertex normal and with vertex normal. We can see that Phong shading with vertex normal is a lot smoother than the other. 
+		<p>	Below is the comparison between the mesh without vertex normal and with vertex normal. We can see that Phong shading with vertex normal is a lot smoother than the other. </p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -142,8 +143,8 @@
 		</div>
 
 		<h3>Part 4: Edge flip</h3>
-		To implement edge flip, I draw a diagram showing all halfedges, edges, vertices, faces before and after flip. Then I just update each elements based on the figure to flip the edge as well as making sure the half-edge data structure is still valid. One thing to note here is there's no new elements being added during edge flip.<br>
-		Here is the image I drew for edge flip.
+		<p>To implement edge flip, I draw a diagram showing all halfedges, edges, vertices, faces before and after flip. Then I just update each elements based on the figure to flip the edge as well as making sure the half-edge data structure is still valid. One thing to note here is there's no new elements being added during edge flip.</p>
+		<p>Here is the image I drew for edge flip.</p>
 		<figure>
 			<img src="4_diagram.jpg" alt="part4" style="width:50%"/>
 			<figcaption>Edge flip</figcaption>
@@ -169,9 +170,9 @@
 
 
 		<h3>Part 5: Edge split</h3>
-		In this part, I implemented Edge split. Similarly, I draw a diagram showing all halfedges, edges, vertices, faces before and after split. Then I just update each elements based on the figure to split the edge as well as making sure the half-edge data structure is still valid. Note that, in the split action, I need to add new elements, such as vertex "e", half edges "h10-h15", edges "e5-e7", and faces (f2,f3). Therefore, in my code, I need to create those new elements and make sure they are connected correctly. Additionally, I will mark new edges and new vertex to be new by setting "isNew" to true.<br>
+		<p>In this part, I implemented Edge split. Similarly, I draw a diagram showing all halfedges, edges, vertices, faces before and after split. Then I just update each elements based on the figure to split the edge as well as making sure the half-edge data structure is still valid. Note that, in the split action, I need to add new elements, such as vertex "e", half edges "h10-h15", edges "e5-e7", and faces (f2,f3). Therefore, in my code, I need to create those new elements and make sure they are connected correctly. Additionally, I will mark new edges and new vertex to be new by setting "isNew" to true.</p>
 		
-		Here is the diagram I drew for edge split. I used higglighter to show the new elements added after split.
+		<p>Here is the diagram I drew for edge split. I used higglighter to show the new elements added after split.</p>
 		<figure>
 			<img src="5_diagram.jpg" alt="part5" style="width:50%"/>
 			<figcaption>Edge split</figcaption>
@@ -213,12 +214,12 @@
 		Similar to part 4, the most important thing for debugging is to make sure the figure is correct and the assignments in code is correct. (Since there're a lot of new elements to add, it's easy to make mistakes.) 
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		1. In my implementation, I followed the homework instructions exactly. First, I computed the positions of both new and old vertices using the original mesh, applying different update formulas (this was done in my code in steps 1 and 2). Then, I performed edge splitting on the original edges and updated the newVertex returned from splitEdge() to its new position (without updating its position directly). After that, I performed edge flipping only if the edge was new and connected an old vertex to a new vertex. Finally, I copied the new computed vertex positions into each vertices' position.<br>
-		One implementation trick I used was saving a copy of the original edges. Initially, I used a while loop to iterate through all available edges while performing the split, but debugging this was extremely difficult. I also tried the debugging tip from the homework guidelines, which suggested using a while loop while always saving nextEdge as a reference. However, that approach didn't work for me. Instead, I found that saving a copy of the original edges and looping through that for splitting was more effective.
-		Another implementation detail is that I chose to set all isNew variables for newly added vertices and edges inside splitEdge(). By doing this, I didn't have to worry about handling it in the upsample() function, which helped keep my code cleaner.<br>
+		<p>1. In my implementation, I followed the homework instructions exactly. First, I computed the positions of both new and old vertices using the original mesh, applying different update formulas (this was done in my code in steps 1 and 2). Then, I performed edge splitting on the original edges and updated the newVertex returned from splitEdge() to its new position (without updating its position directly). After that, I performed edge flipping only if the edge was new and connected an old vertex to a new vertex. Finally, I copied the new computed vertex positions into each vertices' position.</p>
+		<p>One implementation trick I used was saving a copy of the original edges. Initially, I used a while loop to iterate through all available edges while performing the split, but debugging this was extremely difficult. I also tried the debugging tip from the homework guidelines, which suggested using a while loop while always saving nextEdge as a reference. However, that approach didn't work for me. Instead, I found that saving a copy of the original edges and looping through that for splitting was more effective.
+		Another implementation detail is that I chose to set all isNew variables for newly added vertices and edges inside splitEdge(). By doing this, I didn't have to worry about handling it in the upsample() function, which helped keep my code cleaner.</p>
 		
-		2. By loop subdivision, I noticed the meshes looks more and more smoother as more iterations are applied. Also, the sharp corner and edges seems to be less sharp, it's more rounded. This can be reduced by pre-splitting some edges such that the subdivision will preserve its geomety & topology. Specifically, I found manually splitting the mesh before applying loop subdivision can help preserve the sharp edges and corners.
-		Below are the screenshots of the cube after applying loop subdivision for 1, 2, 3 iterations. We can notice that it's smoother and less sharp.
+		<p>2. By loop subdivision, I noticed the meshes looks more and more smoother as more iterations are applied. Also, the sharp corner and edges seems to be less sharp, it's more rounded. This can be reduced by pre-splitting some edges such that the subdivision will preserve its geomety & topology. Specifically, I found manually splitting the mesh before applying loop subdivision can help preserve the sharp edges and corners.
+		Below are the screenshots of the cube after applying loop subdivision for 1, 2, 3 iterations. We can notice that it's smoother and less sharp.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -243,7 +244,7 @@
 			  </tr>
 			</table>
 		
-		3. Experiment with "cube.dae": When applying multiple iterations of loop subdivision to the cube, the resulting sube became asymmetric. This is because different vertices have different vertex degrees (n in the formula), so when we compute the new position of vertices, there will be uneven weight distribution, resulting the asymmetry. I tried pre-processing the cube with edge splits only and I found the cube to be more symmetric after applying loop subdivision. This is because as we split the edges, the valence of each vertex becomes more even, which helps to maintain the symmetry of the cube. <br>
+		<p> Experiment with "cube.dae": When applying multiple iterations of loop subdivision to the cube, the resulting sube became asymmetric. This is because different vertices have different vertex degrees (n in the formula), so when we compute the new position of vertices, there will be uneven weight distribution, resulting the asymmetry. I tried pre-processing the cube with edge splits only and I found the cube to be more symmetric after applying loop subdivision. This is because as we split the edges, the valence of each vertex becomes more even, which helps to maintain the symmetry of the cube. </p>
 		Here are the screenshots of pre-process the cube with manual splits, and then apply loop subdivision for 1, 2, 3 iterations. 
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
