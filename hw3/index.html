@@ -28,12 +28,12 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 3 Write-Up</h1>
-		<div style="text-align: center;">Names: Zehan Ma</div>
+		<div style="text-align: center;">Names: Zehan Ma and Julia Isaac</div>
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a> <br>
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage: <a href="https://github.com/cal-cs184-student/hw-webpages-ada">https://github.com/cal-cs184-student/hw-webpages-ada</a> <br>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw3-ada-a/tree/master">https://github.com/cal-cs184-student/sp25-hw3-ada-a/tree/master</a>
 	
 
 		<!--
@@ -46,57 +46,28 @@
 		<h2>Part 1: Ray Generation and Scene Intersection</h2>
 		<p>1. Walk through the ray generation and primitive intersection parts of the rendering pipeline <br>
 		<h3>Ray Generation</h3>
+		To generate camera rays, we make a function generate_ray that takes the normalized image coordinates (x,y) as input and outputs a Ray in the world space. By convention, I first transform the image coordinates to camera space, generate the ray in the camera space, and finally transform it into a ray in the world space. The camera space has its own coordinate system as shown above. To do this, I subtract 0.5 from x and y since we can see in the image that a coordinate of (0.5, 0.5) in image (normalized) space matches up with (0, 0) in camera space. Then we can multiply by 2*tan(0.5*hFov/vFov) for x and y respectively. The reason we need to double what was presented is because of the initial 0.5 offset since we want (1, 1) to match up to the tan quantity but when we subtract 0.5 it will only be half the tan quantity. The ray direction is then transformed to world space by multiplying by the camera2world matrix with a 3D vector using X, Y we just computed and with Z=-1.
+
+		</p>
+
+		<h3>Generating Pixel Samples</h3>
 		<p>
-			Here's the high-level overview of the ray generation process:
-			<ul>
-			<li>We first transform the input coordinates to camera space by the following formula
-			<code>camX = (2x - 1) * tan(hFov / 2)</code><br>
-			<code>camY = (2y - 1) * tan(vFov / 2)</code>
-			</li>
+			In order to generate pixel samples, we define the function raytrace_pixel that takes pixel coordinates (x,y) as input and updates the corresponding pixel in sampleBuffer with a Vector3D representing the integral of radiance over this pixel. I implement this by looping over ns_aa randomly generated rays. For each ray I call est_radiance_global_illumination() to estimate the scene radiance along that ray and keep a running sum of the total radiance, to which I divide by the number of samples to get an (average) radiance estimate and this estimate I use to color that pixel in the image.
 
-			<li>
-				then transform the camera space coordinates to world space by the following formula <br>
-				<code>dirWorld = c2w * Vector3D(camX, camY, -1).unit()</code>
-			</li>
-
-			<li>
-				Finally, we create a ray object with the origin and direction, and set its near and far clipping planes with <code>nClip</code> and <code>fClip</code>
-			</li>
-		</ul>
 		</p>
 
 		<h3>Primitive Intersection</h3>
 		<p>
-			(1) triangle intersection: I mainly used moller-trumbore algorithm to calculate the intersection point of a ray and a triangle. (Which I will explain in the next section)
-			<br>
-			(2) Sphere intersection: I used quadratic equation to determince if a ray intersects with a sphere.
-			<ul>
-				<li> We know Ray equation: <code>r(t) = o + t d</code> and Sphere equation: <code>(p - c)^2 = R^2</code></li>
-				<li>Substitte Ray equation into Sphere equation, we get a quadratic equation: <code>(o + t d - c)^2 = R^2</code></li>
-				<li>Then we solve the quadratic equation to get the intersection point: <code>t = (-b ± sqrt(b^2 - 4ac)) / (2a)</code></li>
-				<li>The ray intersects the sphere if <code>b^2 - 4ac ≥ 0</code> and at least one of <code>t1</code> or <code>t2</code> lies in <code>[min_t, max_t]</code>.<br>
-					The normal is computed as <code>n = ((o + t d) - c) / R</code>.</li>
-			</ul>
+			I implemented the Triangle::has_intersection(...) and intersect(...) functions to test for an intersection between a triangle and the input ray and also report the location of the nearest intersection point. I used the Moller Trumbore Algorithm in the following lecture slide to optimally solve for the t parameter when we intersect the triangle. It also gives us b1 and b2 below which are alpha and beta in the Barycentric interpretation, where gamma is 1 - b1 - b2 if it is a valid intersection. We can simply check if alpha, beta, and gamma are valid and t is between min and max t and return true if these conditions are true, otherwise return false. I then update the ray’s max_t and set the intersection parameters according to the spec (t and normal vector = alpha * n1 + beta * n2 + gamma * n3, etc.)
+
 
 		</p>
 
-		<p>2. Explain the triangle intersection algorithm you implemented in your own words <br>
-		I basically implemented Moeller-Trumbore algorithm to calculate the intersection point of a ray and a triangle. I referenced this lecture slide:
 		<figure>
 			<img src="part1_triangle_intersection.png" width="400px"/>
 			<figcaption>Moeller-Trumbore algorithm</figcaption>
 		</figure>
 		<br>
-		<ul>
-			<li>The goal is to solve <code>o + t d = (1 - b1 - b2) P0 + b1 P1 + b2 P2</code></li>
-			<li> First, compute all relavant vectors: <code>E1 = P1 - P0</code>, <code>E2 = P2 - P0</code>, <code>S = o - P0</code>, <code>S1 = d x E2</code>, <code>S2 = S x E1</code></li>
-			<li>Then, we solve for <code>t</code>, <code>b1</code>, and <code>b2</code> by the following formulas: <br>
-				<code>t = S2 * E2 / (S1 * E1)</code> <br>
-				<code>b1 = S1 * S / (S2 * E1)</code> <br>
-				<code>b2 = S2 * S / (S1 * E1)</code>
-			</li>
-			<li> Finally, we check if the intersection is valid and create isect</li>
-		</ul>
 	</p>
 
 		<p>3. Show images with normal shading for a few small .dae files. <br>
